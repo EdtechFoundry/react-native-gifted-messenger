@@ -484,12 +484,11 @@ class GiftedMessenger extends Component {
   }
 
   renderRow(rowData = {}) {
-    if (this.props.renderCustomRow) {
-      return this.props.renderCustomRow(rowData, this.props);
-    }
     let diffMessage = null;
     diffMessage = this.getPreviousMessage(rowData);
-
+    if (this.props.renderCustomRow) {
+      return this.props.renderCustomRow(rowData, diffMessage);
+    }
     return (
       <View>
         {this.renderDate(rowData)}
