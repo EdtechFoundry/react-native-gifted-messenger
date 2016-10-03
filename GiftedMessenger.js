@@ -21,6 +21,9 @@ import Button from 'react-native-button';
 import merge from 'lodash/merge';
 import {AutoGrowingTextInput} from 'react-native-autogrow-textinput';
 
+const textInputContainerHeight = 44;
+const textHeightOffset = 6;
+
 class GiftedMessenger extends Component {
 
   constructor(props) {
@@ -89,7 +92,6 @@ class GiftedMessenger extends Component {
       },
       textInput: {
         alignSelf: 'flex-end',
-        // height: 30, // won't work because we autogrow
         width: 100,
         backgroundColor: '#FFF',
         flex: 1,
@@ -565,7 +567,7 @@ class GiftedMessenger extends Component {
   }
 
   onTextInputHeightChange = (newHeight, oldHeight, changedBy) => {
-    this.listViewMaxHeight = this.props.maxHeight - Math.max(newHeight, 44);
+    this.listViewMaxHeight = this.props.maxHeight - Math.max(newHeight, textInputContainerHeight);
 
     setTimeout(() => this.scrollToBottom(true), 200);
 
@@ -576,8 +578,9 @@ class GiftedMessenger extends Component {
   }
 
   renderTextInput() {
+
     const containerStyle = Object.assign({}, this.styles.textInputContainer, {
-      height: this.state.textHeight && this.state.textHeight + 6 > this.styles.textInputContainer.height ? this.state.textHeight + 6 : this.styles.textInputContainer.height,
+      height: this.state.textHeight && this.state.textHeight + textHeightOffset > this.styles.textInputContainer.height ? (this.state.textHeight + textHeightOffset) : this.styles.textInputContainer.height,
     });
 
     if (this.props.hideTextInput === false) {
