@@ -19,6 +19,7 @@ import {setLocale} from './Locale';
 import deepEqual from 'deep-equal';
 import Button from 'react-native-button';
 import merge from 'lodash/merge';
+import {AutoGrowingTextInput} from 'react-native-autogrow-textinput';
 
 class GiftedMessenger extends Component {
 
@@ -87,13 +88,13 @@ class GiftedMessenger extends Component {
         paddingRight: 10,
       },
       textInput: {
-        alignSelf: 'center',
-        height: 30,
+        alignSelf: 'flex-end',
+        // height: 30, // won't work because we autogrow
         width: 100,
         backgroundColor: '#FFF',
         flex: 1,
-        padding: 0,
-        margin: 0,
+        paddingBottom: 4,
+        margin: 5,
         fontSize: 15,
       },
       sendButton: {
@@ -561,12 +562,25 @@ class GiftedMessenger extends Component {
     });
   }
 
+  onTextInputHeightChange = (newHeight, oldHeight, changedBy) => {
+    this.listViewMaxHeight = this.props.maxHeight - Math.max(newHeight, 44);
+
+    this.setState({
+      height: new Animated.Value(this.listViewMaxHeight),
+      textHeight: newHeight,
+    });
+  }
+
   renderTextInput() {
+    const containerStyle = Object.assign({}, this.styles.textInputContainer, {
+      height: this.state.textHeight && this.state.textHeight + 6 > this.styles.textInputContainer.height ? this.state.textHeight + 6 : this.styles.textInputContainer.height,
+    });
+
     if (this.props.hideTextInput === false) {
       return (
-        <View style={this.styles.textInputContainer}>
+        <View style={containerStyle}>
           {this.props.leftControlBar}
-          <TextInput
+          <AutoGrowingTextInput
             ref={'textInput'}
             testID={'messageInput'}
             style={this.styles.textInput}
@@ -578,8 +592,10 @@ class GiftedMessenger extends Component {
             returnKeyType={this.props.submitOnReturn ? 'send' : 'default'}
             onSubmitEditing={this.props.submitOnReturn ? this.onSend : () => {}}
             enablesReturnKeyAutomatically={true}
-
+            multiline
             blurOnSubmit={this.props.blurOnSubmit}
+            onHeightChanged={(newHeight, oldHeight, changedBy) => this.onTextInputHeightChange(newHeight, oldHeight, changedBy)}
+            maxHeight={500}
           />
           {this.renderSendButton()}
           </View>
