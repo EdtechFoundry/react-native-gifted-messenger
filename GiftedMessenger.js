@@ -209,6 +209,8 @@ class GiftedMessenger extends Component {
     } else {
       this.onChangeText('');
       this.props.handleSend(message);
+      this.refs.textInput.resetHeightToMin();
+      this.onTextInputHeightChange(0);
     }
     if (Platform.OS === 'android') { // hack to remove autocomplete cache
       this.refs.textInput.setNativeProps({keyboardType:"email-address"});
@@ -564,6 +566,8 @@ class GiftedMessenger extends Component {
 
   onTextInputHeightChange = (newHeight, oldHeight, changedBy) => {
     this.listViewMaxHeight = this.props.maxHeight - Math.max(newHeight, 44);
+
+    setTimeout(() => this.scrollToBottom(true), 200);
 
     this.setState({
       height: new Animated.Value(this.listViewMaxHeight),
