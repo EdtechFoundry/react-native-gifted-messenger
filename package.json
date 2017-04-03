@@ -28,7 +28,8 @@
   },
   "homepage": "https://github.com/FaridSafi/react-native-gifted-chat#readme",
   "scripts": {
-    "lint": "eslint . --ext .js,.jsx"
+    "lint": "eslint . --ext .js,.jsx",
+    "test": "npm run lint"
   },
   "devDependencies": {
     "eslint": "~3.12.2",
