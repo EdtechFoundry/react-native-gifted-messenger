@@ -448,6 +448,30 @@ class GiftedChat extends React.Component {
     return null;
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!_.isEqual(this.state, nextState)) {
+      return true;
+    }
+
+    if (this.props.loadEarlier !== nextProps.loadEarlier) {
+      return true;
+    }
+
+    if (this.props.isLoadingEarlier !== nextProps.isLoadingEarlier) {
+      return true;
+    }
+
+    if (this.props.shouldHideInputToolbar !== nextProps.shouldHideInputToolbar) {
+      return true;
+    }
+
+    if (!_.isEqual(this.props.messages, nextProps.messages)) {
+      return true;
+    }
+
+    return false;
+  }
+
   render() {
     const minHeight = Math.max(this.state.composerHeight || 0) + (this.state.suggestionsHeight || 0) + 10;
     if (this.state.isInitialized === true) {
