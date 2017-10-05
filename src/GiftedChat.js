@@ -114,6 +114,11 @@ class GiftedChat extends React.Component {
 
   componentWillReceiveProps(nextProps = {}) {
     this.initMessages(nextProps.messages);
+    if (this.props.shouldHideInputToolbar !== nextProps.shouldHideInputToolbar) {
+      this.setState({
+        messagesContainerHeight: this.prepareMessagesContainerHeight(this.getMaxHeight() - this.getMinInputToolbarHeight(nextProps) - this.getKeyboardHeight() + this.getBottomOffset()),
+      });
+    }
   }
 
   initLocale() {
@@ -196,14 +201,14 @@ class GiftedChat extends React.Component {
 
   // TODO
   // setMinInputToolbarHeight
-  getMinInputToolbarHeight() {
-    if (this.props.shouldHideInputToolbar) {
+  getMinInputToolbarHeight(props = this.props) {
+    if (props.shouldHideInputToolbar) {
       return 0;
     } else {
-      if (this.props.renderAccessory) {
-        return this.props.minInputToolbarHeight * 2
+      if (props.renderAccessory) {
+        return props.minInputToolbarHeight * 2
       } else {
-        return this.props.minInputToolbarHeight;
+        return props.minInputToolbarHeight;
       }
     }
   }
