@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Image,
   StyleSheet,
@@ -56,9 +57,9 @@ MessageImage.defaultProps = {
 };
 
 MessageImage.propTypes = {
-  currentMessage: React.PropTypes.object,
+  currentMessage: PropTypes.object,
   containerStyle: View.propTypes.style,
   imageStyle: Image.propTypes.style,
-  imageProps: React.PropTypes.object,
-  lightboxProps: React.PropTypes.object,
+  imageProps: PropTypes.object,
+  lightboxProps: PropTypes.object,
 };

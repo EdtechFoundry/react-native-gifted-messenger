@@ -2,6 +2,7 @@
 **  This component will be published in a separate package
 */
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Image,
   Text,
@@ -154,8 +155,8 @@ GiftedAvatar.defaultProps = {
 };
 
 GiftedAvatar.propTypes = {
-  user: React.PropTypes.object,
-  onPress: React.PropTypes.func,
+  user: PropTypes.object,
+  onPress: PropTypes.func,
   avatarStyle: Image.propTypes.style,
   textStyle: Text.propTypes.style,
 };

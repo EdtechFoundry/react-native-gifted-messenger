@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import {
   ListView,
@@ -174,12 +175,12 @@ MessageContainer.defaultProps = {
 };
 
 MessageContainer.propTypes = {
-  messages: React.PropTypes.array,
-  user: React.PropTypes.object,
-  renderFooter: React.PropTypes.func,
-  renderMessage: React.PropTypes.func,
-  onLoadEarlier: React.PropTypes.func,
-  listViewProps: React.PropTypes.object,
-  onTopReached: React.PropTypes.func,
-  onTopReachedThreshold: React.PropTypes.number,
+  messages: PropTypes.array,
+  user: PropTypes.object,
+  renderFooter: PropTypes.func,
+  renderMessage: PropTypes.func,
+  onLoadEarlier: PropTypes.func,
+  listViewProps: PropTypes.object,
+  onTopReached: PropTypes.func,
+  onTopReachedThreshold: PropTypes.number,
 };
