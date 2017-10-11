@@ -51,6 +51,9 @@ export default class InputToolbar extends React.Component {
   }
 
   render() {
+    if(this.props.shouldHideInputToolbar){
+      return null;
+    }
     return (
       <View style={[styles.container, this.props.containerStyle]}>
         <View style={[styles.primary, this.props.primaryStyle]}>
@@ -95,6 +98,7 @@ InputToolbar.propTypes = {
   renderSend: PropTypes.func,
   renderComposer: PropTypes.func,
   onPressActionButton: PropTypes.func,
+  shouldHideInputToolbar: PropTypes.bool,
   containerStyle: ViewPropTypes.style,
   primaryStyle: ViewPropTypes.style,
   accessoryStyle: ViewPropTypes.style,

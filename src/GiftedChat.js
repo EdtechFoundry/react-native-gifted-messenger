@@ -116,6 +116,11 @@ class GiftedChat extends React.Component {
     const { messages, text } = nextProps;
     this.setMessages(messages || []);
     this.setTextFromProp(text);
+    if (this.props.shouldHideInputToolbar !== nextProps.shouldHideInputToolbar) {
+      this.setState({
+        messagesContainerHeight: this.prepareMessagesContainerHeight(this.getMaxHeight() - this.getMinInputToolbarHeight(nextProps) - this.getKeyboardHeight() + this.getBottomOffset()),
+      });
+    }
   }
 
   initLocale() {
@@ -215,8 +220,16 @@ class GiftedChat extends React.Component {
 
   // TODO
   // setMinInputToolbarHeight
-  getMinInputToolbarHeight() {
-    return this.props.renderAccessory ? this.props.minInputToolbarHeight * 2 : this.props.minInputToolbarHeight;
+  getMinInputToolbarHeight(props = this.props) {
+    if (props.shouldHideInputToolbar) {
+      return 0;
+    } else {
+      if (props.renderAccessory) {
+        return props.minInputToolbarHeight * 2
+      } else {
+        return props.minInputToolbarHeight;
+      }
+    }
   }
 
   calculateInputToolbarHeight(composerHeight) {
@@ -320,6 +333,23 @@ class GiftedChat extends React.Component {
     );
   }
 
+  renderSuggestions() {
+    if (!this.props.renderSuggestions) {
+      return null
+    }
+    const suggestions = this.props.renderSuggestions(this.props)
+    if (!suggestions) {
+      return null
+    }
+    const bottom = this.calculateInputToolbarHeight(this.state.composerHeight) + 1
+    return (
+      <View style={[styles.suggestions, {bottom}]}
+            onLayout={e => this.setState({suggestionsHeight: e.nativeEvent.layout.height})}>
+        {suggestions}
+      </View>
+    )
+  }
+
   onSend(messages = [], shouldResetInputToolbar = false) {
     if (!Array.isArray(messages)) {
       messages = [messages];
@@ -354,6 +384,13 @@ class GiftedChat extends React.Component {
   resetInputToolbar() {
     if (this.textInput) {
       this.textInput.clear();
+      // hack to remove autocomplete cache on android
+      if (Platform.OS === 'android') {
+        this.textInput.setNativeProps({keyboardType: 'email-address'});
+        this.textInput.setNativeProps({keyboardType: 'default'});
+      }
+    } else {
+      console.warn('Could not clear the textInput');
     }
     this.notifyInputTextReset();
     const newComposerHeight = MIN_COMPOSER_HEIGHT;
@@ -481,6 +518,7 @@ class GiftedChat extends React.Component {
           <View style={styles.container} onLayout={this.onMainViewLayout}>
             {this.renderMessages()}
             {this.renderInputToolbar()}
+            {this.renderSuggestions()}
           </View>
         </ActionSheet>
       );
@@ -496,6 +534,11 @@ class GiftedChat extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  suggestions: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
   },
 });
 
@@ -537,6 +580,7 @@ GiftedChat.defaultProps = {
   renderCustomView: null,
   renderDay: null,
   renderTime: null,
+  renderSuggestions: null,
   renderFooter: null,
   renderChatFooter: null,
   renderInputToolbar: null,
@@ -574,6 +618,7 @@ GiftedChat.propTypes = {
   renderLoadEarlier: PropTypes.func,
   renderAvatar: PropTypes.func,
   showUserAvatar: PropTypes.bool,
+  shouldHideInputToolbar: PropTypes.bool,
   onPressAvatar: PropTypes.func,
   renderAvatarOnTop: PropTypes.bool,
   renderBubble: PropTypes.func,

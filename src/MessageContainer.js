@@ -20,11 +20,12 @@ export default class MessageContainer extends React.Component {
     this.renderFooter = this.renderFooter.bind(this);
     this.renderLoadEarlier = this.renderLoadEarlier.bind(this);
     this.renderScrollComponent = this.renderScrollComponent.bind(this);
+    this.defaultRowHasChanged = (r1, r2) => {
+      return r1.hash !== r2.hash;
+    };
 
     const dataSource = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => {
-        return r1.hash !== r2.hash;
-      }
+      rowHasChanged: this.props.rowHasChanged || this.defaultRowHasChanged
     });
 
     const messagesData = this.prepareMessages(props.messages);
@@ -141,6 +142,7 @@ export default class MessageContainer extends React.Component {
       <View ref='container' style={{flex:1}}>
         <ListView
           enableEmptySections={true}
+          keyboardShouldPersistTaps={'always'}
           automaticallyAdjustContentInsets={false}
           initialListSize={20}
           pageSize={20}
@@ -153,6 +155,9 @@ export default class MessageContainer extends React.Component {
           renderHeader={this.renderFooter}
           renderFooter={this.renderLoadEarlier}
           renderScrollComponent={this.renderScrollComponent}
+          onChangeVisibleRows={this.props.onChangeVisibleRows}
+          onEndReached={this.props.onTopReached}
+          onEndReachedThreshold={this.props.onTopReachedThreshold}
         />
       </View>
     );
@@ -175,4 +180,7 @@ MessageContainer.propTypes = {
   renderMessage: PropTypes.func,
   onLoadEarlier: PropTypes.func,
   listViewProps: PropTypes.object,
+  onChangeVisibleRows: PropTypes.func,
+  onTopReached: PropTypes.func,
+  onTopReachedThreshold: PropTypes.number,
 };
