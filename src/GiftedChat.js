@@ -639,6 +639,7 @@ GiftedChat.propTypes = {
   renderComposer: PropTypes.func,
   renderActions: PropTypes.func,
   renderSend: PropTypes.func,
+  renderSuggestions: PropTypes.func,
   renderAccessory: PropTypes.func,
   onPressActionButton: PropTypes.func,
   bottomOffset: PropTypes.number,
