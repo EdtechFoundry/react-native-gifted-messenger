@@ -1,10 +1,11 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import {
   Modal,
   StyleSheet,
   TouchableOpacity,
   View,
+  ViewPropTypes,
   Text,
 } from 'react-native';
 
@@ -170,7 +171,7 @@ const styles = StyleSheet.create({
     borderRadius: 13,
     borderColor: '#b2b2b2',
     borderWidth: 2,
-    flexGrow: 1,
+    flex: 1,
   },
   iconText: {
     color: '#b2b2b2',
@@ -198,7 +199,7 @@ CustomActions.propTypes = {
   onSend: PropTypes.func,
   options: PropTypes.object,
   icon: PropTypes.func,
-  containerStyle: View.propTypes.style,
-  wrapperStyle: View.propTypes.style,
+  containerStyle: ViewPropTypes.style,
+  wrapperStyle: ViewPropTypes.style,
   iconTextStyle: Text.propTypes.style,
 };

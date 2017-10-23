@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import {
   Text,
@@ -5,8 +6,8 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   View,
+  ViewPropTypes,
 } from 'react-native';
-import PropTypes from 'prop-types';
 
 import MessageText from './MessageText';
 import MessageImage from './MessageImage';
@@ -94,7 +95,7 @@ export default class Bubble extends React.Component {
 
   onLongPress() {
     if (this.props.onLongPress) {
-      this.props.onLongPress(this.context);
+      this.props.onLongPress(this.context, this.props.currentMessage);
     } else {
       if (this.props.currentMessage.text) {
         const options = [
@@ -145,7 +146,7 @@ export default class Bubble extends React.Component {
 const styles = {
   left: StyleSheet.create({
     container: {
-      flexGrow: 1,
+      flex: 1,
       alignItems: 'flex-start',
     },
     wrapper: {
@@ -164,7 +165,7 @@ const styles = {
   }),
   right: StyleSheet.create({
     container: {
-      flexGrow: 1,
+      flex: 1,
       alignItems: 'flex-end',
     },
     wrapper: {
@@ -238,25 +239,25 @@ Bubble.propTypes = {
   nextMessage: PropTypes.object,
   previousMessage: PropTypes.object,
   containerStyle: PropTypes.shape({
-    left: View.propTypes.style,
-    right: View.propTypes.style,
+    left: ViewPropTypes.style,
+    right: ViewPropTypes.style,
   }),
   wrapperStyle: PropTypes.shape({
-    left: View.propTypes.style,
-    right: View.propTypes.style,
+    left: ViewPropTypes.style,
+    right: ViewPropTypes.style,
   }),
   bottomContainerStyle: PropTypes.shape({
-    left: View.propTypes.style,
-    right: View.propTypes.style,
+    left: ViewPropTypes.style,
+    right: ViewPropTypes.style,
   }),
   tickStyle: Text.propTypes.style,
   containerToNextStyle: PropTypes.shape({
-    left: View.propTypes.style,
-    right: View.propTypes.style,
+    left: ViewPropTypes.style,
+    right: ViewPropTypes.style,
   }),
   containerToPreviousStyle: PropTypes.shape({
-    left: View.propTypes.style,
-    right: View.propTypes.style,
+    left: ViewPropTypes.style,
+    right: ViewPropTypes.style,
   }),
   //TODO: remove in next major release
   isSameDay: PropTypes.func,

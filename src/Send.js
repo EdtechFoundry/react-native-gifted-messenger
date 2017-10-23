@@ -1,10 +1,11 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import {
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
+  ViewPropTypes,
 } from 'react-native';
 
 export default class Send extends React.Component {
@@ -18,14 +19,16 @@ export default class Send extends React.Component {
     if (this.props.text.trim().length > 0) {
       return (
         <TouchableOpacity
-          style={styles.container}
+          style={[styles.container, this.props.containerStyle]}
           onPress={() => {
             this.props.onSend({text: this.props.text.trim()}, true);
           }}
           accessibilityLabel={'sendButton'}
           accessibilityTraits="button"
         >
-          <Text style={[styles.text, this.props.textStyle]}>{this.props.label}</Text>
+          <View>
+            {this.props.children || <Text style={[styles.text, this.props.textStyle]}>{this.props.label}</Text>}
+          </View>
         </TouchableOpacity>
       );
     }
@@ -61,6 +64,6 @@ Send.propTypes = {
   text: PropTypes.string,
   onSend: PropTypes.func,
   label: PropTypes.string,
-  containerStyle: View.propTypes.style,
+  containerStyle: ViewPropTypes.style,
   textStyle: Text.propTypes.style,
 };

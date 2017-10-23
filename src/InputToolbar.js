@@ -1,8 +1,9 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import {
   StyleSheet,
   View,
+  ViewPropTypes,
 } from 'react-native';
 
 import Composer from './Composer';
@@ -33,7 +34,6 @@ export default class InputToolbar extends React.Component {
 
     return (
       <Composer
-        ref={'composer'}
         {...this.props}
       />
     );
@@ -98,8 +98,8 @@ InputToolbar.propTypes = {
   renderSend: PropTypes.func,
   renderComposer: PropTypes.func,
   onPressActionButton: PropTypes.func,
-  containerStyle: View.propTypes.style,
-  primaryStyle: View.propTypes.style,
-  accessoryStyle: View.propTypes.style,
   shouldHideInputToolbar: PropTypes.bool,
+  containerStyle: ViewPropTypes.style,
+  primaryStyle: ViewPropTypes.style,
+  accessoryStyle: ViewPropTypes.style,
 };

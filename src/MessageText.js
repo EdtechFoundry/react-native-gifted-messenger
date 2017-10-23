@@ -1,14 +1,17 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import {
   Linking,
   StyleSheet,
   Text,
   View,
+  ViewPropTypes,
 } from 'react-native';
 
 import ParsedText from 'react-native-parsed-text';
 import Communications from 'react-native-communications';
+
+const WWW_URL_PATTERN = /^www\./i;
 
 export default class MessageText extends React.Component {
   constructor(props) {
@@ -19,13 +22,25 @@ export default class MessageText extends React.Component {
   }
 
   onUrlPress(url) {
-    Linking.openURL(url);
+    // When someone sends a message that includes a website address beginning with "www." (omitting the scheme),
+    // react-native-parsed-text recognizes it as a valid url, but Linking fails to open due to the missing scheme.
+    if (WWW_URL_PATTERN.test(url)) {
+      this.onUrlPress(`http://${url}`);
+    } else {
+      Linking.canOpenURL(url).then((supported) => {
+        if (!supported) {
+          console.error('No handler for URL:', url);
+        } else {
+          Linking.openURL(url);
+        }
+      });
+    }
   }
 
   onPhonePress(phone) {
     const options = [
-      'Text',
       'Call',
+      'Text',
       'Cancel',
     ];
     const cancelButtonIndex = options.length - 1;
@@ -46,18 +61,20 @@ export default class MessageText extends React.Component {
   }
 
   onEmailPress(email) {
-    Communications.email(email, null, null, null, null);
+    Communications.email([email], null, null, null, null);
   }
 
   render() {
+    const linkStyle = StyleSheet.flatten([styles[this.props.position].link, this.props.linkStyle[this.props.position]]);
     return (
       <View style={[styles[this.props.position].container, this.props.containerStyle[this.props.position]]}>
         <ParsedText
           style={[styles[this.props.position].text, this.props.textStyle[this.props.position]]}
           parse={[
-            {type: 'url', style: StyleSheet.flatten([styles[this.props.position].link, this.props.linkStyle[this.props.position]]), onPress: this.onUrlPress},
-            {type: 'phone', style: StyleSheet.flatten([styles[this.props.position].link, this.props.linkStyle[this.props.position]]), onPress: this.onPhonePress},
-            {type: 'email', style: StyleSheet.flatten([styles[this.props.position].link, this.props.linkStyle[this.props.position]]), onPress: this.onEmailPress},
+            ...this.props.parsePatterns(linkStyle),
+            {type: 'url', style: linkStyle, onPress: this.onUrlPress},
+            {type: 'phone', style: linkStyle, onPress: this.onPhonePress},
+            {type: 'email', style: linkStyle, onPress: this.onEmailPress},
           ]}
         >
           {this.props.currentMessage.text}
@@ -115,14 +132,15 @@ MessageText.defaultProps = {
   containerStyle: {},
   textStyle: {},
   linkStyle: {},
+  parsePatterns: () => [],
 };
 
 MessageText.propTypes = {
   position: PropTypes.oneOf(['left', 'right']),
   currentMessage: PropTypes.object,
   containerStyle: PropTypes.shape({
-    left: View.propTypes.style,
-    right: View.propTypes.style,
+    left: ViewPropTypes.style,
+    right: ViewPropTypes.style,
   }),
   textStyle: PropTypes.shape({
     left: Text.propTypes.style,
@@ -132,4 +150,5 @@ MessageText.propTypes = {
     left: Text.propTypes.style,
     right: Text.propTypes.style,
   }),
+  parsePatterns: PropTypes.func,
 };

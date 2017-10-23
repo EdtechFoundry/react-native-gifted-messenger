@@ -1,5 +1,5 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import {
   Platform,
   StyleSheet,
@@ -7,12 +7,13 @@ import {
 } from 'react-native';
 
 export default class Composer extends React.Component {
-  onChange(e) {
+  onContentSizeChange(e) {
     const contentSize = e.nativeEvent.contentSize;
-    if (!this.contentSize) {
-      this.contentSize = contentSize;
-      this.props.onInputSizeChanged(this.contentSize);
-    } else if (this.contentSize.width !== contentSize.width || this.contentSize.height !== contentSize.height) {
+
+    // Support earlier versions of React Native on Android.
+    if (!contentSize) return;
+
+    if (!this.contentSize || this.contentSize.width !== contentSize.width || this.contentSize.height !== contentSize.height) {
       this.contentSize = contentSize;
       this.props.onInputSizeChanged(this.contentSize);
     }
@@ -25,12 +26,13 @@ export default class Composer extends React.Component {
   render() {
     return (
       <TextInput
-        ref={'textInput'}
         placeholder={this.props.placeholder}
         placeholderTextColor={this.props.placeholderTextColor}
         multiline={this.props.multiline}
 
-        onChange={(e) => this.onChange(e)}
+        onChange={(e) => this.onContentSizeChange(e)}
+        onContentSizeChange={(e) => this.onContentSizeChange(e)}
+
         onChangeText={text => this.onChangeText(text)}
 
         style={[styles.textInput, this.props.textInputStyle, {height: this.props.composerHeight}]}
@@ -47,7 +49,7 @@ export default class Composer extends React.Component {
 
 const styles = StyleSheet.create({
   textInput: {
-    flexGrow: 1,
+    flex: 1,
     marginLeft: 10,
     fontSize: 16,
     lineHeight: 16,
@@ -63,14 +65,11 @@ const styles = StyleSheet.create({
 });
 
 Composer.defaultProps = {
-  onChange: () => {
-  },
   composerHeight: Platform.select({
     ios: 33,
     android: 41,
   }), // TODO SHARE with GiftedChat.js and tests
   text: '',
-  placeholder: 'Type a message...',
   placeholderTextColor: '#b2b2b2',
   textInputProps: null,
   multiline: true,
@@ -82,7 +81,6 @@ Composer.defaultProps = {
 };
 
 Composer.propTypes = {
-  onChange: PropTypes.func,
   composerHeight: PropTypes.number,
   text: PropTypes.string,
   placeholder: PropTypes.string,

@@ -1,8 +1,8 @@
 /*
 **  This component will be published in a separate package
 */
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import {
   Image,
   Text,

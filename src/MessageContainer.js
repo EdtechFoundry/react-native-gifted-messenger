@@ -1,5 +1,5 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 import {
   ListView,
@@ -139,7 +139,7 @@ export default class MessageContainer extends React.Component {
 
   render() {
     return (
-      <View ref='container' style={{flexGrow:1}}>
+      <View ref='container' style={{flex:1}}>
         <ListView ref='listViewRef'
           enableEmptySections={true}
           keyboardShouldPersistTaps={'always'}
@@ -169,7 +169,6 @@ MessageContainer.defaultProps = {
   user: {},
   renderFooter: null,
   renderMessage: null,
-  listViewProps: {},
   onLoadEarlier: () => {
   },
 };
@@ -181,6 +180,7 @@ MessageContainer.propTypes = {
   renderMessage: PropTypes.func,
   onLoadEarlier: PropTypes.func,
   listViewProps: PropTypes.object,
+  onChangeVisibleRows: PropTypes.func,
   onTopReached: PropTypes.func,
   onTopReachedThreshold: PropTypes.number,
 };

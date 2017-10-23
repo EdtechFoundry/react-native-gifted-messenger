@@ -1,6 +1,6 @@
-import React from "react";
 import PropTypes from 'prop-types';
-import {Image, StyleSheet, View} from "react-native";
+import React from "react";
+import {Image, StyleSheet, View, ViewPropTypes} from "react-native";
 import GiftedAvatar from "./GiftedAvatar";
 import {isSameUser, isSameDay, warnDeprecated} from "./utils";
 
@@ -14,6 +14,7 @@ export default class Avatar extends React.Component {
       <GiftedAvatar
         avatarStyle={StyleSheet.flatten([styles[this.props.position].image, this.props.imageStyle[this.props.position]])}
         user={this.props.currentMessage.user}
+        onPress={() => this.props.onPressAvatar && this.props.onPressAvatar(this.props.currentMessage.user)}
       />
     );
   }
@@ -22,6 +23,10 @@ export default class Avatar extends React.Component {
     const renderAvatarOnTop = this.props.renderAvatarOnTop;
     const messageToCompare = renderAvatarOnTop ? this.props.previousMessage : this.props.nextMessage;
     const computedStyle = renderAvatarOnTop ? "onTop" : "onBottom"
+
+    if (this.props.renderAvatar === null) {
+      return null
+    }
 
     if (isSameUser(this.props.currentMessage, messageToCompare) && isSameDay(this.props.currentMessage, messageToCompare)) {
       return (
@@ -32,6 +37,7 @@ export default class Avatar extends React.Component {
         </View>
       );
     }
+
     return (
       <View
         style={[styles[this.props.position].container, styles[this.props.position][computedStyle], this.props.containerStyle[this.props.position]]}>
@@ -91,13 +97,14 @@ Avatar.propTypes = {
   position: PropTypes.oneOf(['left', 'right']),
   currentMessage: PropTypes.object,
   nextMessage: PropTypes.object,
+  onPressAvatar: PropTypes.func,
   containerStyle: PropTypes.shape({
-    left: View.propTypes.style,
-    right: View.propTypes.style,
+    left: ViewPropTypes.style,
+    right: ViewPropTypes.style,
   }),
   imageStyle: PropTypes.shape({
-    left: View.propTypes.style,
-    right: View.propTypes.style,
+    left: ViewPropTypes.style,
+    right: ViewPropTypes.style,
   }),
   //TODO: remove in next major release
   isSameDay: PropTypes.func,
