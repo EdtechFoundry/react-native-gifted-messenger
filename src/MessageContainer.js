@@ -1,13 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import {
-  ListView,
-  View,
-} from 'react-native';
+import {ListView, View, FlatList} from 'react-native';
 
 import shallowequal from 'shallowequal';
-import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import md5 from 'md5';
 import LoadEarlier from './LoadEarlier';
 import Message from './Message';
@@ -19,38 +14,25 @@ export default class MessageContainer extends React.Component {
     this.renderRow = this.renderRow.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
     this.renderLoadEarlier = this.renderLoadEarlier.bind(this);
-    this.renderScrollComponent = this.renderScrollComponent.bind(this);
-    this.defaultRowHasChanged = (r1, r2) => {
-      return r1.hash !== r2.hash;
-    };
 
-    const dataSource = new ListView.DataSource({
-      rowHasChanged: this.props.rowHasChanged || this.defaultRowHasChanged
-    });
-
-    const messagesData = this.prepareMessages(props.messages);
     this.state = {
-      dataSource: dataSource.cloneWithRows(messagesData.blob, messagesData.keys)
+      messages: this.prepareMessages(props.messages),
     };
   }
 
   prepareMessages(messages) {
-    return {
-      keys: messages.map(m => m._id),
-      blob: messages.reduce((o, m, i) => {
-        const previousMessage = messages[i + 1] || {};
-        const nextMessage = messages[i - 1] || {};
-        // add next and previous messages to hash to ensure updates
-        const toHash = JSON.stringify(m) + previousMessage._id + nextMessage._id;
-        o[m._id] = {
-          ...m,
-          previousMessage,
-          nextMessage,
-          hash: md5(toHash)
-        };
-        return o;
-      }, {})
-    };
+    return messages.reduce((o, m, i) => {
+      const previousMessage = messages[i + 1] || {};
+      const nextMessage = messages[i - 1] || {};
+      // add next and previous messages to hash to ensure updates
+      const toHash = JSON.stringify(m) + previousMessage._id + nextMessage._id;
+      return o.concat({
+        ...m,
+        previousMessage,
+        nextMessage,
+        hash: md5(toHash)
+      });
+    }, []);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -67,10 +49,10 @@ export default class MessageContainer extends React.Component {
     if (this.props.messages === nextProps.messages) {
       return;
     }
-    const messagesData = this.prepareMessages(nextProps.messages);
     this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(messagesData.blob, messagesData.keys)
-    });
+      messages: this.prepareMessages(nextProps.messages),
+    })
+    ;
   }
 
   renderFooter() {
@@ -98,26 +80,30 @@ export default class MessageContainer extends React.Component {
     return null;
   }
 
-  scrollTo(options) {
-    this._invertibleScrollViewRef.scrollTo(options);
+  scrollToBottom(animated) {
+    if (this.refs.listViewRef) {
+      this.refs.listViewRef.scrollToOffset({y: 0, animated})
+    } else {
+      console.warn('Unable to scroll to bottom, listViewRef is not defined');
+    }
   }
 
-  renderRow(message, sectionId, rowId) {
-    if (!message._id && message._id !== 0) {
-      console.warn('GiftedChat: `_id` is missing for message', JSON.stringify(message));
+  renderRow({item}) {
+    if (!item._id && item._id !== 0) {
+      console.warn('GiftedChat: `_id` is missing for message', JSON.stringify(item));
     }
-    if (!message.user) {
-      console.warn('GiftedChat: `user` is missing for message', JSON.stringify(message));
-      message.user = {};
+    if (!item.user) {
+      console.warn('GiftedChat: `user` is missing for message', JSON.stringify(item));
+      item.user = {};
     }
 
     const messageProps = {
       ...this.props,
-      key: message._id,
-      currentMessage: message,
-      previousMessage: message.previousMessage,
-      nextMessage: message.nextMessage,
-      position: message.user._id === this.props.user._id ? 'right' : 'left',
+      key: item._id,
+      currentMessage: item,
+      previousMessage: item.previousMessage,
+      nextMessage: item.nextMessage,
+      position: item.user._id === this.props.user._id ? 'right' : 'left',
     };
 
     if (this.props.renderMessage) {
@@ -126,35 +112,24 @@ export default class MessageContainer extends React.Component {
     return <Message {...messageProps}/>;
   }
 
-  renderScrollComponent(props) {
-    const invertibleScrollViewProps = this.props.invertibleScrollViewProps;
-    return (
-      <InvertibleScrollView
-        {...props}
-        {...invertibleScrollViewProps}
-        ref={component => this._invertibleScrollViewRef = component}
-      />
-    );
-  }
+  keyExtractor = (item, index) => item._id;
 
   render() {
     return (
-      <View ref='container' style={{flex:1}}>
-        <ListView ref='listViewRef'
-          enableEmptySections={true}
+      <View ref='container' style={{flex: 1}}>
+        <FlatList
+          ref='listViewRef'
+          inverted={true}
           keyboardShouldPersistTaps={'always'}
           automaticallyAdjustContentInsets={false}
-          initialListSize={20}
-          pageSize={20}
-
+          initialNumToRender={20}
           {...this.props.listViewProps}
 
-          dataSource={this.state.dataSource}
-
-          renderRow={this.renderRow}
-          renderHeader={this.renderFooter}
-          renderFooter={this.renderLoadEarlier}
-          renderScrollComponent={this.renderScrollComponent}
+          data={this.state.messages}
+          keyExtractor={this.keyExtractor}
+          renderItem={this.renderRow}
+          ListHeaderComponent={this.renderFooter}
+          ListFooterComponent={this.renderLoadEarlier}
           onChangeVisibleRows={this.props.onChangeVisibleRows}
           onEndReached={this.props.onTopReached}
           onEndReachedThreshold={this.props.onTopReachedThreshold}
