@@ -120,7 +120,6 @@ export default class MessageContainer extends React.Component {
         <FlatList
           ref='flatListRef'
           inverted={true}
-          keyboardShouldPersistTaps={'always'}
           automaticallyAdjustContentInsets={false}
           initialNumToRender={20}
           {...this.props.flatListKeyboardProps}
