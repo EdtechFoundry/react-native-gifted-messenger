@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {ListView, View, FlatList} from 'react-native';
+import {View, FlatList} from 'react-native';
 
 import shallowequal from 'shallowequal';
 import md5 from 'md5';
@@ -123,14 +123,13 @@ export default class MessageContainer extends React.Component {
           keyboardShouldPersistTaps={'always'}
           automaticallyAdjustContentInsets={false}
           initialNumToRender={20}
-          {...this.props.listViewProps}
-
+          {...this.props.flatListKeyboardProps}
+          {...this.props.flatListProps}
           data={this.state.messages}
           keyExtractor={this.keyExtractor}
           renderItem={this.renderRow}
           ListHeaderComponent={this.renderFooter}
           ListFooterComponent={this.renderLoadEarlier}
-          onChangeVisibleRows={this.props.onChangeVisibleRows}
           onEndReached={this.props.onTopReached}
           onEndReachedThreshold={this.props.onTopReachedThreshold}
         />
@@ -154,8 +153,8 @@ MessageContainer.propTypes = {
   renderFooter: PropTypes.func,
   renderMessage: PropTypes.func,
   onLoadEarlier: PropTypes.func,
-  listViewProps: PropTypes.object,
-  onChangeVisibleRows: PropTypes.func,
+  flatListProps: PropTypes.object,
+  flatListKeyboardProps: PropTypes.object,
   onTopReached: PropTypes.func,
   onTopReachedThreshold: PropTypes.number,
 };

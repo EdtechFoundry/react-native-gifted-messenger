@@ -60,8 +60,7 @@ class GiftedChat extends React.Component {
     this.onInitialLayoutViewLayout = this.onInitialLayoutViewLayout.bind(this);
 
 
-    this.invertibleScrollViewProps = {
-      inverted: true,
+    this.flatListKeyboardProps = {
       keyboardShouldPersistTaps: this.props.keyboardShouldPersistTaps,
       onKeyboardWillShow: this.onKeyboardWillShow,
       onKeyboardWillHide: this.onKeyboardWillHide,
@@ -312,7 +311,7 @@ class GiftedChat extends React.Component {
         <MessageContainer
           {...this.props}
 
-          invertibleScrollViewProps={this.invertibleScrollViewProps}
+          flatListKeyboardProps={this.flatListKeyboardProps}
 
           messages={this.getMessages()}
 
@@ -582,7 +581,7 @@ GiftedChat.defaultProps = {
   onPressActionButton: null,
   bottomOffset: 0,
   minInputToolbarHeight: 44,
-  listViewProps: {},
+  flatListProps: {},
   keyboardShouldPersistTaps: Platform.select({
     ios: 'never',
     android: 'always',
@@ -633,7 +632,7 @@ GiftedChat.propTypes = {
   onPressActionButton: PropTypes.func,
   bottomOffset: PropTypes.number,
   minInputToolbarHeight: PropTypes.number,
-  listViewProps: PropTypes.object,
+  flatListProps: PropTypes.object,
   keyboardShouldPersistTaps: PropTypes.oneOf(['always', 'never', 'handled']),
   onInputTextChanged: PropTypes.func,
   maxInputLength: PropTypes.number,

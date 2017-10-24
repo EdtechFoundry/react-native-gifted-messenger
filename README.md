@@ -136,9 +136,9 @@ e.g.
 - **`renderCustomView`** _(Function)_ - Custom view inside the bubble
 - **`renderDay`** _(Function)_ - Custom day above a message
 - **`renderTime`** _(Function)_ - Custom time inside a message
-- **`renderFooter`** _(Function)_ - Custom footer component on the ListView, e.g. `'User is typing...'`; see [example/App.js](example/App.js) for an example
+- **`renderFooter`** _(Function)_ - Custom footer component on the FlatList, e.g. `'User is typing...'`; see [example/App.js](example/App.js) for an example
 - **`shouldHideInputToolbar`** _(Bool)_ - Hide the input toolbar
-- **`renderChatFooter`** _(Function)_ - Custom component to render below the MessageContainer (separate from the ListView)
+- **`renderChatFooter`** _(Function)_ - Custom component to render below the MessageContainer (separate from the FlatList)
 - **`renderInputToolbar`** _(Function)_ - Custom message composer container
 - **`renderComposer`** _(Function)_ - Custom text input message composer
 - **`renderActions`** _(Function)_ - Custom action button on the left of the message composer
@@ -150,7 +150,7 @@ e.g.
 - **`onTopReachedThreshold`** _(Integer)_ - Distance to the top to trigger onTopReached
 - **`bottomOffset`** _(Integer)_ - Distance of the chat from the bottom of the screen (e.g. useful if you display a tab bar)
 - **`minInputToolbarHeight`** _(Integer)_ - Minimum height of the input toolbar; default is `44`
-- **`listViewProps`** _(Object)_ - Extra props to be passed to the messages [`<ListView>`](https://facebook.github.io/react-native/docs/listview.html); some props can't be overridden, see the code in `MessageContainer.render()` for details
+- **`flatListProps`** _(Object)_ - Extra props to be passed to the messages [`<FlatList>`](http://facebook.github.io/react-native/docs/flatlist.html); some props can't be overridden, see the code in `MessageContainer.render()` for details
 - **`keyboardShouldPersistTaps`** _(Enum)_ - Determines whether the keyboard should stay visible after a tap; see [`<ScrollView>`](https://facebook.github.io/react-native/docs/scrollview.html) docs
 - **`onInputTextChanged`** _(Function)_ - Callback when the input text changes
 - **`maxInputLength`** _(Integer)_ - Max message composer TextInput length
