@@ -5,6 +5,11 @@ import {
   StyleSheet,
   TextInput,
 } from 'react-native';
+import {
+  MIN_COMPOSER_HEIGHT,
+  COMPOSER_MARGIN_TOP,
+  COMPOSER_MARGIN_BOTTOM,
+} from './Constants';
 
 export default class Composer extends React.Component {
   onContentSizeChange(e) {
@@ -53,22 +58,13 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16,
     lineHeight: 16,
-    marginTop: Platform.select({
-      ios: 6,
-      android: 0,
-    }),
-    marginBottom: Platform.select({
-      ios: 5,
-      android: 3,
-    }),
+    marginTop: COMPOSER_MARGIN_TOP,
+    marginBottom: COMPOSER_MARGIN_BOTTOM,
   },
 });
 
 Composer.defaultProps = {
-  composerHeight: Platform.select({
-    ios: 33,
-    android: 41,
-  }), // TODO SHARE with GiftedChat.js and tests
+  composerHeight: MIN_COMPOSER_HEIGHT,
   text: '',
   placeholderTextColor: '#b2b2b2',
   textInputProps: null,
