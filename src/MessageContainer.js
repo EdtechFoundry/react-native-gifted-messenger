@@ -81,8 +81,8 @@ export default class MessageContainer extends React.Component {
   }
 
   scrollToBottom(animated) {
-    if (this.refs.flatListRef) {
-      this.refs.flatListRef.scrollToOffset({y: 0, animated})
+    if (this.flatListRef) {
+      this.flatListRef.scrollToOffset({y: 0, animated})
     } else {
       console.warn('Unable to scroll to bottom, flatListRef is not defined');
     }
@@ -118,7 +118,7 @@ export default class MessageContainer extends React.Component {
     return (
       <View ref='container' style={{flex: 1}}>
         <FlatList
-          ref='flatListRef'
+          ref={(ref) => this.flatListRef = ref}
           inverted={true}
           automaticallyAdjustContentInsets={false}
           initialNumToRender={20}
