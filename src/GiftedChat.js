@@ -170,9 +170,7 @@ class GiftedChat extends React.Component {
       // So for calculate the messages container height ignore keyboard height.
       return 0;
     } else {
-      // Differ has its own ScreenView component that accounts for keyboard height, so we just return 0 here.
-      return 0;
-      // return this._keyboardHeight;
+      return this._keyboardHeight;
     }
   }
 
