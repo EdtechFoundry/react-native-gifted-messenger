@@ -9,6 +9,7 @@ import {
 import {GiftedChat, Actions, Bubble} from 'react-native-gifted-chat';
 import CustomActions from './CustomActions';
 import CustomView from './CustomView';
+import _ from 'lodash';
 
 export default class Example extends React.Component {
   constructor(props) {
@@ -27,6 +28,7 @@ export default class Example extends React.Component {
     this.renderBubble = this.renderBubble.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
     this.onLoadEarlier = this.onLoadEarlier.bind(this);
+    this.onLoadNewer = this.onLoadNewer.bind(this);
 
     this._isAlright = null;
   }
@@ -38,6 +40,10 @@ export default class Example extends React.Component {
         messages: require('./data/messages.js'),
       };
     });
+  }
+
+  componentDidMount() {
+    this.onLoadNewer();
   }
 
   componentWillUnmount() {
@@ -55,7 +61,7 @@ export default class Example extends React.Component {
       if (this._isMounted === true) {
         this.setState((previousState) => {
           return {
-            messages: GiftedChat.prepend(previousState.messages, require('./data/old_messages.js')),
+            messages: require('./data/old_messages.js').concat(previousState.messages),
             loadEarlier: false,
             isLoadingEarlier: false,
           };
@@ -63,6 +69,19 @@ export default class Example extends React.Component {
       }
     }, 1000); // simulating network
   }
+
+  onLoadNewer() {
+    setTimeout(() => {
+      if (this._isMounted) {
+        this.setState((previousState) => {
+          return {
+            messages: _.cloneDeep(previousState.messages).concat(require('./data/new_messages')()),
+          };
+        });
+      }
+    }, 1000);
+  }
+
 
   onSend(messages = []) {
     this.setState((previousState) => {
@@ -80,7 +99,7 @@ export default class Example extends React.Component {
       if ((messages[0].image || messages[0].location) || !this._isAlright) {
         this.setState((previousState) => {
           return {
-            typingText: 'React Native is typing'
+            typingText: 'React Native is typing',
           };
         });
       }
@@ -193,6 +212,7 @@ export default class Example extends React.Component {
         onSend={this.onSend}
         loadEarlier={this.state.loadEarlier}
         onLoadEarlier={this.onLoadEarlier}
+        onLoadNewer={this.onLoadNewer}
         isLoadingEarlier={this.state.isLoadingEarlier}
 
         user={{
