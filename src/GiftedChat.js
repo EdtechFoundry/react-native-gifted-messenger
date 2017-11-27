@@ -351,8 +351,11 @@ class GiftedChat extends React.Component {
 
     this.props.onSend(messages);
 
-    if (this.props.shouldResetInputToolbar) {
+    if (this.props.shouldScrollToBottom) {
       this.scrollToBottom();
+    }
+
+    if (this.props.shouldResetInputToolbar) {
       setTimeout(() => {
         if (this.getIsMounted()) {
           this.setIsTypingDisabled(false);
@@ -604,6 +607,7 @@ GiftedChat.propTypes = {
   onPressAvatar: PropTypes.func,
   renderAvatarOnTop: PropTypes.bool,
   shouldResetInputToolbar: PropTypes.bool,
+  shouldScrollToBottom: PropTypes.bool,
   renderBubble: PropTypes.func,
   onLongPress: PropTypes.func,
   renderMessage: PropTypes.func,
