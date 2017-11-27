@@ -330,7 +330,7 @@ class GiftedChat extends React.Component {
     )
   }
 
-  onSend(messages = [], shouldResetInputToolbar = false) {
+  onSend(messages = []) {
     if (!Array.isArray(messages)) {
       messages = [messages];
     }
@@ -344,17 +344,17 @@ class GiftedChat extends React.Component {
       };
     });
 
-    if (shouldResetInputToolbar === true) {
+    if (this.props.shouldResetInputToolbar) {
       this.setIsTypingDisabled(true);
       this.resetInputToolbar();
     }
 
     this.props.onSend(messages);
-    this.scrollToBottom();
 
-    if (shouldResetInputToolbar === true) {
+    if (this.props.shouldResetInputToolbar) {
+      this.scrollToBottom();
       setTimeout(() => {
-        if (this.getIsMounted() === true) {
+        if (this.getIsMounted()) {
           this.setIsTypingDisabled(false);
         }
       }, 100);
@@ -579,6 +579,7 @@ GiftedChat.defaultProps = {
   }),
   onInputTextChanged: null,
   maxInputLength: null,
+  shouldResetInputToolbar: true,
 };
 
 GiftedChat.propTypes = {
@@ -602,6 +603,7 @@ GiftedChat.propTypes = {
   shouldHideInputToolbar: PropTypes.bool,
   onPressAvatar: PropTypes.func,
   renderAvatarOnTop: PropTypes.bool,
+  shouldResetInputToolbar: PropTypes.bool,
   renderBubble: PropTypes.func,
   onLongPress: PropTypes.func,
   renderMessage: PropTypes.func,
