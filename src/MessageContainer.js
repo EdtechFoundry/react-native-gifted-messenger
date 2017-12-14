@@ -14,45 +14,16 @@ export default class MessageContainer extends React.Component {
     this.renderRow = this.renderRow.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
     this.renderLoadEarlier = this.renderLoadEarlier.bind(this);
-
-    this.state = {
-      messages: this.prepareMessages(props.messages),
-    };
   }
 
-  prepareMessages(messages) {
-    return messages.reduce((o, m, i) => {
-      const previousMessage = messages[i + 1] || {};
-      const nextMessage = messages[i - 1] || {};
-      // add next and previous messages to hash to ensure updates
-      const toHash = JSON.stringify(m) + previousMessage._id + nextMessage._id;
-      return o.concat({
-        ...m,
-        previousMessage,
-        nextMessage,
-        hash: md5(toHash)
-      });
-    }, []);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps) {
+    if (this.props.messages.length !== nextProps.messages.length) {
+      return true;
+    }
     if (!shallowequal(this.props, nextProps)) {
       return true;
     }
-    if (!shallowequal(this.state, nextState)) {
-      return true;
-    }
     return false;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.messages === nextProps.messages) {
-      return;
-    }
-    this.setState({
-      messages: this.prepareMessages(nextProps.messages),
-    })
-    ;
   }
 
   renderFooter() {
@@ -88,7 +59,7 @@ export default class MessageContainer extends React.Component {
     }
   }
 
-  renderRow({item}) {
+  renderRow({item, index}) {
     if (!item._id && item._id !== 0) {
       console.warn('GiftedChat: `_id` is missing for message', JSON.stringify(item));
     }
@@ -97,12 +68,17 @@ export default class MessageContainer extends React.Component {
       item.user = {};
     }
 
+    const {messages, ...restProps} = this.props;
+    const previousMessage = messages[index + 1] || {};
+    const nextMessage = messages[index - 1] || {};
+
     const messageProps = {
-      ...this.props,
+      ...restProps,
       key: item._id,
       currentMessage: item,
-      previousMessage: item.previousMessage,
-      nextMessage: item.nextMessage,
+      previousMessage,
+      nextMessage,
+      hash: md5(JSON.stringify(item) + previousMessage._id + nextMessage._id),
       position: item.user._id === this.props.user._id ? 'right' : 'left',
     };
 
@@ -124,7 +100,7 @@ export default class MessageContainer extends React.Component {
           initialNumToRender={20}
           {...this.props.flatListKeyboardProps}
           {...this.props.flatListProps}
-          data={this.state.messages}
+          data={this.props.messages}
           keyExtractor={this.keyExtractor}
           renderItem={this.renderRow}
           ListHeaderComponent={this.renderFooter}
