@@ -17,9 +17,6 @@ export default class MessageContainer extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    if (this.props.messages.length !== nextProps.messages.length) {
-      return true;
-    }
     if (!shallowequal(this.props, nextProps)) {
       return true;
     }
