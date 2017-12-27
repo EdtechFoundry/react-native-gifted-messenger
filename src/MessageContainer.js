@@ -14,9 +14,11 @@ export default class MessageContainer extends React.Component {
     this.renderRow = this.renderRow.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
     this.renderLoadEarlier = this.renderLoadEarlier.bind(this);
+    this.onScroll = this.onScroll.bind(this);
 
     this.state = {
       messages: this.prepareMessages(props.messages),
+      isLoadingNewer: false,
     };
   }
 
@@ -112,6 +114,17 @@ export default class MessageContainer extends React.Component {
     return <Message {...messageProps}/>;
   }
 
+  async onScroll({nativeEvent}) {
+    const offset = nativeEvent.contentSize.height - nativeEvent.contentOffset.y;
+    const threshold = offset / nativeEvent.layoutMeasurement.height - 1;
+    if (!this.state.isLoadingNewer && threshold <= this.props.onTopReachedThreshold) {
+      await this.setState({isLoadingNewer: true});
+      await this.props.onLoadNewer();
+      await this.setState({isLoadingNewer: false});
+      //console.log('!!!!!!!!!!!!!!', offset, threshold);
+    }
+  }
+
   keyExtractor = (item, index) => item._id;
 
   render() {
@@ -136,6 +149,8 @@ export default class MessageContainer extends React.Component {
           ListFooterComponent={this.renderLoadEarlier}
           onEndReached={this.props.onTopReached}
           onEndReachedThreshold={this.props.onTopReachedThreshold}
+          onScroll={this.onScroll}
+          scrollEventThrottle={500}
         />
       </View>
     );
@@ -147,8 +162,9 @@ MessageContainer.defaultProps = {
   user: {},
   renderFooter: null,
   renderMessage: null,
-  onLoadEarlier: () => {
-  },
+  onLoadEarlier: () => {},
+  onLoadNewer: () => {},
+  onTopReachedThreshold: 0.5,
 };
 
 MessageContainer.propTypes = {
@@ -157,6 +173,7 @@ MessageContainer.propTypes = {
   renderFooter: PropTypes.func,
   renderMessage: PropTypes.func,
   onLoadEarlier: PropTypes.func,
+  onLoadNewer: PropTypes.func,
   flatListProps: PropTypes.object,
   flatListKeyboardProps: PropTypes.object,
   onTopReached: PropTypes.func,
