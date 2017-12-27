@@ -115,6 +115,10 @@ export default class MessageContainer extends React.Component {
   keyExtractor = (item, index) => item._id;
 
   render() {
+    const {extraData, ...restFlatListProps} = this.props.flatListProps;
+    const mergedExtraData = Object.assign({}, extraData, {
+      loadEarlier: this.props.loadEarlier,
+    });
     return (
       <View ref='container' style={{flex: 1}}>
         <FlatList
@@ -123,7 +127,8 @@ export default class MessageContainer extends React.Component {
           automaticallyAdjustContentInsets={false}
           initialNumToRender={20}
           {...this.props.flatListKeyboardProps}
-          {...this.props.flatListProps}
+          {...restFlatListProps}
+          extraData={mergedExtraData}
           data={this.state.messages}
           keyExtractor={this.keyExtractor}
           renderItem={this.renderRow}
