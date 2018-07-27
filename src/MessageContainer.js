@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {View, FlatList} from 'react-native';
+import { View, FlatList } from 'react-native';
 
 import shallowequal from 'shallowequal';
 import md5 from 'md5';
@@ -30,7 +30,7 @@ export default class MessageContainer extends React.Component {
         ...m,
         previousMessage,
         nextMessage,
-        hash: md5(toHash)
+        hash: md5(toHash),
       });
     }, []);
   }
@@ -51,8 +51,7 @@ export default class MessageContainer extends React.Component {
     }
     this.setState({
       messages: this.prepareMessages(nextProps.messages),
-    })
-    ;
+    });
   }
 
   renderFooter() {
@@ -73,27 +72,31 @@ export default class MessageContainer extends React.Component {
       if (this.props.renderLoadEarlier) {
         return this.props.renderLoadEarlier(loadEarlierProps);
       }
-      return (
-        <LoadEarlier {...loadEarlierProps}/>
-      );
+      return <LoadEarlier {...loadEarlierProps} />;
     }
     return null;
   }
 
   scrollToBottom(animated) {
     if (this.flatListRef) {
-      this.flatListRef.scrollToOffset({y: 0, animated})
+      this.flatListRef.scrollToOffset({ y: 0, animated });
     } else {
       console.warn('Unable to scroll to bottom, flatListRef is not defined');
     }
   }
 
-  renderRow({item}) {
+  renderRow({ item }) {
     if (!item._id && item._id !== 0) {
-      console.warn('GiftedChat: `_id` is missing for message', JSON.stringify(item));
+      console.warn(
+        'GiftedChat: `_id` is missing for message',
+        JSON.stringify(item),
+      );
     }
     if (!item.user) {
-      console.warn('GiftedChat: `user` is missing for message', JSON.stringify(item));
+      console.warn(
+        'GiftedChat: `user` is missing for message',
+        JSON.stringify(item),
+      );
       item.user = {};
     }
 
@@ -109,26 +112,23 @@ export default class MessageContainer extends React.Component {
     if (this.props.renderMessage) {
       return this.props.renderMessage(messageProps);
     }
-    return <Message {...messageProps}/>;
+    return <Message {...messageProps} />;
   }
 
   keyExtractor = (item, index) => item._id;
 
   render() {
-    const {extraData, ...restFlatListProps} = this.props.flatListProps;
-    const mergedExtraData = Object.assign({}, extraData, {
-      loadEarlier: this.props.loadEarlier,
-    });
+    const { extraData, ...restFlatListProps } = this.props.flatListProps;
     return (
-      <View ref='container' style={{flex: 1}}>
+      <View ref="container" style={{ flex: 1 }}>
         <FlatList
-          ref={(ref) => this.flatListRef = ref}
+          ref={ref => (this.flatListRef = ref)}
           inverted={true}
           automaticallyAdjustContentInsets={false}
           initialNumToRender={20}
           {...this.props.flatListKeyboardProps}
           {...restFlatListProps}
-          extraData={mergedExtraData}
+          extraData={extraData}
           data={this.state.messages}
           keyExtractor={this.keyExtractor}
           renderItem={this.renderRow}
@@ -147,8 +147,7 @@ MessageContainer.defaultProps = {
   user: {},
   renderFooter: null,
   renderMessage: null,
-  onLoadEarlier: () => {
-  },
+  onLoadEarlier: () => {},
 };
 
 MessageContainer.propTypes = {
